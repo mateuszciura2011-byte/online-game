@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>PolyStrike</title>
+    <link rel="stylesheet" href="/src/style.css" />
+    <link rel="stylesheet" href="/src/cursors.css" />
+    <link rel="stylesheet" href="/src/styles/interface.css" />
+  </head>
+  <body>
+    <canvas id="game"></canvas>
+    <main id="menu">
+      <section class="brand">
+        <small>LOW-POLY MULTIPLAYER SHOOTER</small>
+        <h1>POLY<span>STRIKE</span></h1>
+        <p id="status">Wybierz rozgrywkę</p>
+        <p class="menu-intro">Twoja drużyna. Twój styl. Następna runda.</p>
+      </section>
+      <section class="skin-preview panel-card">
+        <div id="skin-model">▲</div>
+        <b>AKTUALNY SKIN: REKRUT</b>
+        <button data-page="skins">SKINY</button>
+        <button data-page="loadout">WYPOSAŻENIE</button>
+      </section>
+      <nav>
+        <button id="quick" class="button--primary">SZYBKA ROZGRYWKA</button>
+        <div class="training-controls"><button id="training">TRENING</button><div><label for="training-map">MAPA TRENINGU</label><select id="training-map"><option value="depot">Depot</option><option value="crossroads">Crossroads</option><option value="foundry">Odlewnia</option><option value="alleyways">Neonowe zaułki</option><option value="citadel">Cytadela</option><option value="canal">Kanał</option></select></div></div>
+        <button data-page="create">UTWÓRZ SERWER</button>
+        <button data-page="join">DOŁĄCZ DO SERWERA</button>
+        <button data-page="settings">USTAWIENIA</button>
+      </nav>
+      <section id="panel" class="hidden"></section>
+    </main>
+    <aside id="quick-wheel" class="hidden">
+      <button>POMOC!</button><button>ATAKUJ!</button><button>BROŃ!</button><button>ZA MNĄ!</button>
+    </aside>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

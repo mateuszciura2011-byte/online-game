@@ -1,0 +1,7 @@
+{
+  "name": "@polystrike/shared",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": { "./weapons": "./src/config/weapons.ts", "./protocol": "./src/protocol.ts", "./state": "./src/state.ts", "./payload": "./src/payload.ts", "./maps": "./src/maps.ts", "./config/movement": "./src/config/movement.ts", "./config/skins": "./src/config/skins.ts" },
+  "scripts": { "test": "vitest run", "build": "tsc -p tsconfig.json", "typecheck": "tsc -p tsconfig.json --noEmit" }
+}

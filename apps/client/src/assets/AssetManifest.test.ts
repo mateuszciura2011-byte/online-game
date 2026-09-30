@@ -1,0 +1,3 @@
+import { describe, expect, it } from 'vitest';
+import { validateAsset, validateManifest } from './AssetManifest.js';
+describe('asset manifest', () => { it('rejects an asset without license metadata', () => { expect(validateAsset({ id: 'x', kind: 'model', sourceUrl: '', author: '', licenseId: '', attributionRequired: true, compressedBytes: 1 })).toBe('missing_license_metadata'); }); it('enforces triangle and compressed-size budgets', () => { expect(validateAsset({ id: 'large', kind: 'model', sourceUrl: 'https://example.test/a', author: 'A', licenseId: 'CC0', attributionRequired: false, compressedBytes: 150_001, triangleCount: 8_001, role: 'object' })).toBe('compressed_size_budget_exceeded'); expect(validateManifest()).toEqual([]); }); });

@@ -1,0 +1,21 @@
+:root {
+  --bg-0: #030914;
+  --bg-1: #071827;
+  --surface-1: #0a2233;
+  --surface-2: #102f43;
+  --blue-team: #27d8ff;
+  --red-team: #ff8a3d;
+  --reward: #ffd45b;
+  --danger: #ff537d;
+  --success: #57ff84;
+  --cyan: var(--blue-team);
+  --gold: var(--reward);
+  --navy: var(--bg-1);
+  --navy-deep: var(--bg-0);
+  --steel: #163b51;
+  --line: #2a6685;
+  --text: #eaf7ff;
+  --muted: #9fc2d2;
+  --focus-ring: 0 0 0 3px #27d8ff66;
+  --panel-shadow: 0 20px 55px #0009, inset 0 1px #ffffff0d;
+}

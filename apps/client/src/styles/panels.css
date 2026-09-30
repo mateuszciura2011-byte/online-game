@@ -1,0 +1,14 @@
+#panel { scrollbar-color: var(--blue-team) var(--bg-0); }
+#panel::before { content: "POLYSTRIKE // TERMINAL"; display: block; margin-bottom: 16px; color: var(--muted); font-size: 10px; letter-spacing: 2px; }
+.profile-summary { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+.profile-summary>* { padding: 14px; border: 1px solid var(--line); background: var(--surface-1); }
+.inventory-summary { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+.inventory-summary p { grid-column: 1 / -1; margin: 0; }
+.inventory-hint { color: var(--muted); }
+.skin-card { display: grid; gap: 6px; }
+.skin-card span { color: var(--muted); font-size: 10px; }
+.rarity-rare { border-left: 3px solid var(--blue-team)!important; }
+.rarity-epic { border-left: 3px solid #bd6cff!important; }
+.rarity-legendary { border-left: 3px solid var(--reward)!important; }
+button:disabled { filter: saturate(.35); }
+@media(max-width:620px){.profile-summary,.inventory-summary,.skin-list{grid-template-columns:1fr}.skin-list h3{grid-column:auto}}

@@ -1,0 +1,57 @@
+import { createServer } from 'node:http';
+import { resolve } from 'node:path';
+import express from 'express';
+import type { Request, Response } from 'express';
+import { Server, matchMaker } from '@colyseus/core';
+import { WebSocketTransport } from '@colyseus/ws-transport';
+import { GameRoom } from './rooms/GameRoom.js';
+import { ProfileStore } from './profile/ProfileStore.js';
+import { CrateService } from './profile/CrateService.js';
+import { resolveMatchSkin } from './profile/MatchSkin.js';
+import { resolveMatchPrimary } from './profile/MatchLoadout.js';
+import { AccountService } from './profile/AccountService.js';
+import { StatsService } from './profile/StatsService.js';
+import { isValidMatchStats } from './profile/StatsValidation.js';
+
+const app = express();
+const httpServer = createServer(app);
+const gameServer = new Server({ transport: new WebSocketTransport({ server: httpServer }) });
+gameServer.define('game', GameRoom).filterBy(['mode', 'mapId']);
+const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? 'http://localhost:5173,http://127.0.0.1:5173').split(',').map((origin) => origin.trim()).filter(Boolean);
+app.use((request, response, next) => { const origin = request.header('Origin'); if (origin && allowedOrigins.includes(origin)) response.setHeader('Access-Control-Allow-Origin', origin); response.setHeader('Vary', 'Origin'); response.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Account-Code'); response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS'); if (request.method === 'OPTIONS') return response.sendStatus(204); next(); });
+app.use(express.json());
+const profiles = new ProfileStore(resolve('data/profiles.json'));
+const stats = new StatsService(resolve('data/stats.json'));
+const crates = new CrateService(profiles);
+const accounts = new AccountService(profiles, resolve('data/accounts.json'));
+GameRoom.skinForToken = token => resolveMatchSkin(accounts, token);
+GameRoom.primaryForToken = token => resolveMatchPrimary(accounts, token);
+
+app.get('/health', (_request: Request, response: Response) => response.json({ status: 'ok', service: 'polystrike-server' }));
+app.get('/servers', async (_request: Request, response: Response) => {
+  const rooms = await matchMaker.query({ name: 'game' });
+  response.json(rooms.filter((room) => !room.private).map((room) => ({ roomId: room.roomId, clients: room.clients, maxClients: room.maxClients, metadata: room.metadata })));
+});
+app.get('/servers/code/:code', async (request: Request, response: Response) => {
+  const code = String(request.params.code).toUpperCase();
+  const rooms = await matchMaker.query({ name: 'game' });
+  const room = rooms.find((candidate) => candidate.private && (candidate.metadata as { roomCode?: string } | undefined)?.roomCode === code);
+  if (!room) return response.status(404).json({ error: 'not_found' });
+  return response.json({ roomId: room.roomId, mode: (room.metadata as { mode?: string } | undefined)?.mode });
+});
+const ownedProfile = (request: Request) => accounts.resume(String(request.query.token ?? ''));
+const requireProfile = (request: Request, response: Response) => { const profile = ownedProfile(request); if (!profile || profile.id !== String(request.params.id)) { response.status(401).json({ error: 'account_required' }); return undefined; } return profile; };
+app.get('/profile/:id', (request: Request, response: Response) => { const profile = requireProfile(request, response); if (profile) response.json(profile); });
+app.get('/profile/:id/stats', (request: Request, response: Response) => { const profile = requireProfile(request, response); if (profile) response.json(stats.get(profile.id) ?? { matchesPlayed: 0, wins: 0, kills: 0, deaths: 0, shotsFired: 0, shotsHit: 0, playTimeSeconds: 0 }); });
+app.post('/profile/:id/stats', (request: Request, response: Response) => { const profile = requireProfile(request, response); if (!profile) return; const matchId = String(request.body?.matchId ?? '').trim(); const delta = request.body?.delta; if (!matchId || !isValidMatchStats(delta)) return response.status(400).json({ error: 'invalid_stats' }); stats.recordCompletedMatch(matchId, profile.id, delta); return response.json(stats.get(profile.id)); });
+app.post('/account/new', (_request: Request, response: Response) => response.json(accounts.createAnonymousAccount()));
+app.post('/account/resume', (request: Request, response: Response) => { const profile = accounts.resume(String(request.body?.token ?? '')); if (!profile) return response.status(401).json({ error: 'invalid_account_code' }); return response.json({ profile }); });
+app.post('/account/register', (request: Request, response: Response) => { try { return response.json(accounts.register(String(request.body?.email ?? ''), String(request.body?.password ?? ''), String(request.body?.guestToken ?? ''))); } catch (error) { return response.status(400).json({ error: error instanceof Error ? error.message : 'account_registration_failed' }); } });
+app.post('/account/login', (request: Request, response: Response) => { try { return response.json(accounts.signIn(String(request.body?.email ?? ''), String(request.body?.password ?? ''))); } catch { return response.status(401).json({ error: 'invalid_credentials' }); } });
+app.post('/profile/:id/victory', (request: Request, response: Response) => { const profile = requireProfile(request, response); if (!profile) return; const matchId = String(request.body?.matchId ?? '').trim(); if (!matchId) return response.status(400).json({ error: 'match_id_required' }); const coins = profiles.awardVictory(profile.id, matchId); return response.json({ coins }); });
+app.post('/profile/:id/crate/buy', (request: Request, response: Response) => { const profile = requireProfile(request, response); if (!profile) return; try { response.json(crates.buyCrate(profile.id, String(request.body?.key ?? Date.now()))); } catch (error) { response.status(400).json({ error: error instanceof Error ? error.message : 'crate_error' }); } });
+app.post('/profile/:id/crate/open', (request: Request, response: Response) => { const profile = requireProfile(request, response); if (!profile) return; try { response.json(crates.openCrate(profile.id, String(request.body?.key ?? Date.now()))); } catch (error) { response.status(400).json({ error: error instanceof Error ? error.message : 'crate_error' }); } });
+app.post('/profile/:id/crate', (request: Request, response: Response) => { const profile = requireProfile(request, response); if (!profile) return; try { response.json(crates.openCrate(profile.id, String(request.body?.key ?? Date.now()))); } catch (error) { response.status(400).json({ error: error instanceof Error ? error.message : 'crate_error' }); } });
+app.post('/profile/:id/equip', (request: Request, response: Response) => { const profile = requireProfile(request, response); if (!profile) return; const skinId = String(request.body?.skinId ?? ''); if (!profile.ownedSkinIds.includes(skinId)) return response.status(400).json({ error: 'skin_not_owned' }); profile.equippedSkinId = skinId; profiles.save(); return response.json(profile); });
+app.post('/profile/:id/loadout', (request: Request, response: Response) => { const profile = requireProfile(request, response); if (!profile) return; const weapon = String(request.body?.weapon ?? ''); if (!['smg', 'rifle', 'sniper', 'shotgun'].includes(weapon)) return response.status(400).json({ error: 'invalid_weapon' }); profile.equippedPrimaryWeapon = weapon as typeof profile.equippedPrimaryWeapon; profiles.save(); return response.json(profile); });
+gameServer.listen(Number(process.env.PORT ?? 2567));

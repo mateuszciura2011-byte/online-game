@@ -1,0 +1,13 @@
+#hud-health { color: var(--success); }
+#hud-message { max-width: min(760px, calc(100vw - 48px)); text-align: center; }
+#buy-panel { bottom: max(18px, env(safe-area-inset-bottom)); border-top: 3px solid var(--blue-team); }
+#buy-panel button:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+#results.victory { color: var(--reward); }
+#results.defeat { color: var(--danger); }
+.team-blue { color: var(--blue-team); }
+.team-red { color: var(--red-team); }
+@media (max-height: 740px) {
+  #buy-panel { bottom: 12px; padding: 10px; }
+  #buy-panel button { min-height: 36px; }
+  #minimap { width: 124px; height: 124px; }
+}

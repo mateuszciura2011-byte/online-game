@@ -1,0 +1,192 @@
+/* Shared interface skin. Gameplay coordinates and pointer capture stay owned by the game. */
+:root {
+  --ui-accent:#64e9d6;
+  --ui-border:#335263;
+  --ui-muted:#a4b8c5;
+  --ui-surface:linear-gradient(145deg,#142b39f7,#091822fb);
+  --cyan:#64e9d6;
+  --line:var(--ui-border);
+  --muted:var(--ui-muted);
+  font-family:"Segoe UI",Arial,sans-serif;
+}
+button,input,select,textarea { font-family:inherit; }
+button {
+  border:1px solid var(--ui-border);border-radius:8px;background:linear-gradient(145deg,#173442,#102430);
+  letter-spacing:.65px;font-size:12px;font-weight:750;min-height:46px;
+  box-shadow:inset 0 1px #ffffff08;
+}
+button:hover:not(:disabled) { background:#224959;border-color:var(--ui-accent);box-shadow:0 5px 16px #0004;transform:translateY(-1px); }
+button:active:not(:disabled) { transform:translateY(0);background:#285464; }
+button:focus-visible,input:focus-visible,select:focus-visible { outline:2px solid #c2fff3;outline-offset:3px; }
+button:disabled { opacity:.65; }
+input,select,textarea { min-height:44px;border:1px solid var(--ui-border);border-radius:7px;background:#0b1f2c;color:#ebf4f8;letter-spacing:.2px;font-size:13px; }
+input[type=checkbox],input[type=radio] { width:18px;min-height:18px;margin:0 8px 0 0;accent-color:var(--ui-accent);vertical-align:middle; }
+input[type=range],.setting-row input[type=range] { min-height:22px;accent-color:var(--ui-accent); }
+input::placeholder { color:#99b0bf;opacity:1; }
+label { font-size:12px;color:#c9dbe4; }
+select { color-scheme:dark; }
+/* Explicit option surfaces also cover WebViews that ignore color-scheme on popups. */
+select option,optgroup { background:#102532;color:#ebf4f8; }
+select option:checked { background:#234c55;color:#c2fff3; }
+/* Modern Chromium lets the picker share the same authored UI, without replacing
+   native keyboard selection, form values or accessibility with a custom widget. */
+@supports (appearance:base-select) {
+  select,select::picker(select) { appearance:base-select; }
+  select { align-items:center;padding:10px 12px; }
+  select::picker(select) {
+    background:#102532;color:#ebf4f8;border:1px solid #517285;border-radius:8px;
+    padding:6px;box-shadow:0 12px 30px #0008;max-height:min(320px,60dvh);
+    scrollbar-width:thin;scrollbar-color:#628e9b #102532;
+  }
+  select::picker-icon { color:var(--ui-accent); }
+  select option { min-height:36px;padding:8px 12px;border-radius:5px;font-size:13px; }
+  select option:is(:hover,:focus-visible) { background:#234c55;color:#c2fff3;outline:none; }
+  select option::checkmark { color:var(--ui-accent); }
+}
+#menu {
+  min-height:100dvh;grid-template-columns:minmax(0,1.2fr) minmax(270px,.8fr);
+  max-width:none;padding:clamp(24px,5vh,56px) clamp(24px,7vw,110px);gap:28px 56px;align-content:center;
+  background:radial-gradient(ellipse at 82% 28%,#275b6550,transparent 48%),linear-gradient(130deg,#102633ed,#07131ff7 65%);
+}
+#menu::before { opacity:.15;background-size:96px 96px; }
+#menu::after { opacity:.1; }
+.brand { align-self:center; }
+.brand small { color:var(--ui-accent);font-size:10px;letter-spacing:2.7px;padding-bottom:20px; }
+.brand h1 { font-size:clamp(40px,7.6vw,104px);letter-spacing:-.06em;line-height:.92;text-shadow:none; }
+.brand h1 span { text-shadow:none; }
+#status { color:#e2edf3;font-size:15px;font-weight:600;margin-top:22px; }
+.menu-intro { color:var(--ui-muted);font-size:13px;line-height:1.7;margin:8px 0 0; }
+#menu nav { grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-content:start; }
+#menu nav button { min-width:0;padding:14px 16px 14px 20px;min-height:66px;line-height:1.5; }
+#menu nav button::before { inset:18px auto 18px 8px;width:2px;background:#648696;box-shadow:none; }
+#menu nav button::after { display:block;font-size:11px;font-weight:400;letter-spacing:.1px;color:var(--ui-muted);margin-top:3px; }
+#menu #quick { grid-column:1/-1;min-height:78px;background:linear-gradient(110deg,#64e9d6,#83e8ed);color:#0b2c32;border-color:#a6fff0;box-shadow:0 8px 28px #64e9d615;font-size:16px; }
+#menu #quick::before { background:#183f48; }
+#menu #quick::after { content:"Wybierz arenę i tryb · boty uzupełnią skład";color:#1d4953; }
+#menu #quick:hover { background:linear-gradient(110deg,#97f7e6,#9ef1f5)!important; }
+.training-controls { grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:10px; }
+.training-controls>div { padding:8px 12px;background:#0b202ac9;border:1px solid var(--ui-border);border-radius:8px; }
+.training-controls label { display:block;font-size:9px;letter-spacing:1px;color:var(--ui-muted); }
+.training-controls select { margin:4px 0 0;padding:4px 0;min-height:28px;border:0;background:transparent;width:100%;font-size:13px; }
+#training::after { content:"Ruch, celność i każda broń"; }
+nav [data-page=create]::after { content:"Twoja arena i zasady"; }
+nav [data-page=join]::after { content:"Kod pokoju lub lista serwerów"; }
+nav [data-page=settings]::after { content:"Obraz, sterowanie i dźwięk"; }
+nav #account::after { content:"Zachowaj swój postęp"; }
+nav #stats::after { content:"Wyniki i celność"; }
+.skin-preview { align-self:center;grid-row:span 2;border-radius:16px;padding:26px;background:radial-gradient(ellipse at 50% 30%,#2c526450,transparent 68%),var(--ui-surface);box-shadow:0 20px 45px #0004; }
+.skin-preview::before { content:"TWÓJ OPERATOR";display:block;text-align:left;color:var(--ui-muted);font-size:10px;letter-spacing:2px;border-bottom:1px solid var(--ui-border);padding-bottom:15px; }
+#skin-model { margin:24px auto;width:170px;height:225px;animation-duration:5s; }
+.skin-preview b { font-size:12px;letter-spacing:1px;padding:15px 0;border-top:1px solid var(--ui-border); }
+.skin-preview button { width:100%;margin-top:8px; }
+#menu:has(#panel:not(.hidden)) :is(.brand,nav,.skin-preview) { opacity:.3;filter:blur(2px);pointer-events:none; }
+#panel { width:min(860px,calc(100vw - 40px));max-height:calc(100dvh - 40px);padding:28px;border:1px solid #517285;border-radius:14px;background:var(--ui-surface);box-shadow:0 25px 90px #000b;scrollbar-width:thin;scrollbar-color:#628e9b #0a1924; }
+#panel::before { content:"POLYSTRIKE / CENTRUM GRACZA";font-size:9px;letter-spacing:1.8px;color:var(--ui-muted);padding-right:52px; }
+#panel::before { display:none; }
+.panel-toolbar { position:sticky;top:-28px;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:12px;margin:-28px -28px 20px;padding:16px 28px;background:#102532;border-bottom:1px solid var(--ui-border); }
+.panel-toolbar small { color:var(--ui-muted);font-size:9px;letter-spacing:1.8px; }
+.panel-body>p { padding-right:52px; }
+#panel h2 { font-size:25px;letter-spacing:.1px;margin:16px 0;line-height:1.3; }
+#panel h2::after { width:32px;height:2px;box-shadow:none;margin-top:12px;background:var(--ui-accent); }
+#panel h3 { line-height:1.5; }
+#panel p { font-size:13px;line-height:1.7;color:#b8ceda; }
+#close-panel { position:static;float:none;flex:none;min-height:36px;width:36px;margin:0;border-radius:50%;font-size:24px;background:#1a3444;z-index:2; }
+.panel-body>button,#panel .public-server { width:100%;margin:5px 0; }
+#panel #start-quick-match,#panel #create-room,#panel #join-code-button { background:var(--ui-accent);color:#0a2b32;border-color:var(--ui-accent);font-size:13px; }
+.mode-description { border-radius:6px;font-size:13px;min-height:0;background:#162f3e;border-color:var(--ui-accent); }
+#quick-map-cards { gap:10px;margin:18px 0; }
+#quick-map-cards button { background:#102936;border-radius:9px;box-shadow:none; }
+#quick-map-cards .map-preview { height:108px;border-radius:5px;background:#0b1b25; }
+#quick-map-cards [aria-pressed=true] { background:#193e46;box-shadow:inset 0 -3px var(--ui-accent); }
+#weapon-catalog { gap:14px; }
+#weapon-catalog .weapon-card { padding:18px;min-height:260px;border-radius:10px;background:radial-gradient(ellipse at 50% 42%,#284a5b66,transparent 65%),#102733; }
+.weapon-card span { color:var(--ui-accent);font-size:9px; }
+.weapon-card strong { font-size:19px;letter-spacing:.2px; }
+.weapon-card .weapon-preview { height:104px; }
+.weapon-card small { font-size:12px;line-height:1.6; }
+.weapon-card b { font-size:11px;letter-spacing:.6px; }
+#weapon-catalog .weapon-card--equipped { border-color:var(--ui-accent);background:#15363d;box-shadow:inset 3px 0 var(--ui-accent); }
+#skin-inspect { border-radius:10px;background:radial-gradient(ellipse at 20% 50%,#325367,#102530 70%);padding:20px; }
+#skin-inspect h3 { letter-spacing:.2px;font-size:24px; }
+.skin-tile { background:#102733;border-radius:10px;padding:12px; }
+.skin-preview-button { border-radius:7px;background:radial-gradient(ellipse,#2b4a5e,#102733); }
+.crate-store,.inventory-summary { border-radius:10px;background:#122c39;border-color:var(--ui-border);padding:18px;gap:12px; }
+.crate-result:not(:empty) { border-radius:8px;font-size:12px; }
+.settings-grid { gap:12px;align-items:start; }
+.settings-section { background:#102733;border-color:var(--ui-border);padding:20px; }
+.settings-section h3 { color:var(--ui-accent);font-size:10px;margin-bottom:20px; }
+.setting-row output { background:#203d4b;padding:2px 8px;border-radius:4px;color:#d1fff6;font-size:12px; }
+#crosshair-preview { border-radius:7px;border-color:var(--ui-border);background:radial-gradient(ellipse,#1f3c4c,#0a1a26); }
+#stats-content>p,.profile-summary>* { padding:16px 18px;border:1px solid var(--ui-border);border-radius:8px;background:#102733; }
+#stats-content strong { color:#e4fcf5;font-size:16px;font-variant-numeric:tabular-nums; }
+#hud { font-family:"Segoe UI",Arial,sans-serif;font-weight:700;text-shadow:0 2px 4px #0009; }
+#hud :is(#hud-score,#hud-timer,#hud-health,#hud-ammo,#weapon-held,#hud-message.hud-message--default,#hud-message.hud-message--training) { border-radius:7px;background:#0b1e2bdc;border-color:#426275;box-shadow:0 3px 14px #0003;letter-spacing:.4px; }
+#hud #hud-score { font-size:12px;font-weight:700;border:1px solid #426275; }
+#hud #hud-timer { color:#ffe4a0;font-variant-numeric:tabular-nums;font-weight:650; }
+#hud #hud-health { color:#a1e8bd;border-color:#557e69; }
+body.playing #hud #weapon-held { border-left:2px solid var(--ui-accent);font-size:11px;font-weight:650; }
+body.playing #hud #hud-ammo { font-variant-numeric:tabular-nums;font-weight:750; }
+#hud #hud-message.hud-message--default,#hud #hud-message.hud-message--training { font-size:12px;font-weight:600;max-width:calc(100vw - 32px); }
+#hud #hud-message.hud-message--countdown { border-radius:9px;font-size:clamp(28px,4vw,48px);font-weight:700;padding:16px 24px;border-color:var(--ui-accent);color:var(--ui-accent);box-shadow:0 8px 30px #0005; }
+#hud #kill-feed div { border-radius:5px;padding:7px 10px;border-right-color:var(--ui-accent); }
+#hud #scoreboard { background:var(--ui-surface);border-radius:10px;border-color:#517285;text-shadow:none; }
+#hud #scoreboard h2 { color:var(--text);font-size:15px;letter-spacing:1px; }
+#scoreboard-rows .score-row { background:#162e3c;border-radius:4px; }
+body.playing #buy-panel,#pause-panel { border-radius:14px;background:var(--ui-surface);border-top:2px solid var(--ui-accent); }
+#pause-panel { width:min(400px,calc(100vw - 32px));padding:30px; }
+#pause-panel small { font-size:10px;letter-spacing:2px;color:var(--ui-accent); }
+#pause-panel h2 { font-size:36px;font-weight:650;letter-spacing:-1px; }
+#pause-panel button { min-height:50px;border-radius:8px;font-size:12px; }
+body.playing #buy-panel { padding:28px; }
+#buy-panel #buy-title { font-size:20px;letter-spacing:.5px; }
+#buy-panel #buy-help { line-height:1.6;font-size:11px; }
+#buy-panel #buy-cash { color:#ffe3a1;font-size:16px; }
+#buy-panel .buy-weapon-grid { gap:10px; }
+#buy-panel .buy-weapon-card { border-radius:8px;background:#132d3a; }
+#buy-panel .buy-weapon-card em { margin-top:12px;font-variant-numeric:tabular-nums; }
+/* The purchase modal owns the view; gameplay HUD resumes when it closes. */
+body.buying #hud :is(#hud-score,#hud-timer,#hud-message,#weapon-held,#hud-ammo,#minimap,#mode-status,#payload-hud,#team-briefing,#kill-feed,#crosshair,#combat-status,#reload-bar) { opacity:0; }
+body.buying #buy-panel { background:linear-gradient(145deg,#142b39,#091822); }
+#death-screen { background:#06111bd9; }
+#death-screen>div { background:var(--ui-surface);border:1px solid #5a4050;border-top:2px solid #ff8aa6;border-radius:14px;width:min(430px,calc(100vw - 32px));padding:32px; }
+#death-screen h1 { letter-spacing:-1px;font-size:36px;line-height:1.2; }
+#death-screen strong { color:var(--ui-accent);font-size:64px;font-weight:650; }
+#results { background:#081823e8;font-size:clamp(32px,6vw,74px);letter-spacing:-1px;text-shadow:none; }
+#payload-hud,#team-briefing,#mode-status,#quick-wheel { border-radius:7px;border-color:var(--ui-border);background:#0b1e2be6; }
+@media(max-width:900px) {
+  #menu { padding:28px;gap:24px;grid-template-columns:minmax(0,1fr) 240px; }
+  .skin-preview { padding:18px; }
+  .brand h1 { font-size:clamp(34px,7.2vw,70px); }
+}
+@media(max-width:700px) {
+  #menu { grid-template-columns:1fr;gap:22px;padding:28px 16px; }
+  .brand { order:0; }.brand h1 { font-size:clamp(34px,11vw,70px); }
+  #menu nav { order:1; }.skin-preview { order:2;grid-row:auto; }
+  .skin-preview #skin-model { height:180px;width:135px;margin:14px auto; }
+  .skin-preview button { width:calc(50% - 6px);font-size:10px; }
+  #panel { width:calc(100vw - 24px);max-height:calc(100dvh - 24px);padding:18px; }
+  .panel-toolbar { top:-18px;margin:-18px -18px 16px;padding:12px 18px; }
+  #panel h2 { font-size:22px; }
+  #hud #hud-score { font-size:11px; }
+  #hud #hud-message.hud-message--default,#hud #hud-message.hud-message--training { font-size:11px; }
+  body.playing #hud #weapon-held { font-size:10px; }
+  body.playing #buy-panel { padding:18px; }
+}
+@media(max-width:400px) {
+  #menu nav button { font-size:10px;padding-right:10px; }
+  #menu nav button::after { font-size:10px; }
+  #menu #quick { font-size:14px; }
+  #weapon-catalog { grid-template-columns:1fr; }
+}
+@media(max-height:650px) and (min-width:701px) {
+  #menu { padding-top:24px;padding-bottom:24px;gap:20px; }
+  .brand h1 { font-size:64px; }.brand small { padding-bottom:10px; }
+  #status { margin-top:12px; }.menu-intro { display:none; }
+  #menu nav button { min-height:54px;padding-top:9px;padding-bottom:9px; }
+  #menu #quick { min-height:62px; }
+  #skin-model { height:160px;width:120px;margin:16px auto; }
+}
+@media(prefers-reduced-motion:reduce) {
+  *,*::before,*::after { scroll-behavior:auto!important; }
+  button { transition:none; }button:hover:not(:disabled) { transform:none; }
+}

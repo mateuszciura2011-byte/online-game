@@ -1,0 +1,25 @@
+# Dependencies and generated output
+node_modules/
+dist/
+coverage/
+test-results/
+playwright-report/
+*.tsbuildinfo
+*.log
+
+# Local credentials and player data must never be published
+.env
+.env.*
+!.env.example
+apps/server/data/
+*.db
+*.sqlite
+*.sqlite3
+*.pem
+*.key
+
+# Local editor / OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,3 @@
+import { describe, expect, it } from 'vitest';
+import { resolveMatch } from './MatchRules.js';
+describe('match rules', () => { it('ends FFA at thirty eliminations', () => expect(resolveMatch('free_for_all', { one: 30, two: 4 }, 2)?.winnerPlayerId).toBe('one')); it('ends team game at fifty eliminations', () => expect(resolveMatch('team_deathmatch', { blue: 50, red: 4 }, 2)?.winnerTeam).toBe('blue')); it('ends after ten minutes even without reaching the score limit', () => expect(resolveMatch('free_for_all', { one: 4, two: 2 }, 600)).toMatchObject({ reason: 'time_limit', winnerPlayerId: 'one' })); });
